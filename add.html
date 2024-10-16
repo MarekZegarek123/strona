@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodaj wolne godziny</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .form-container {
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+        input,
+        select {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        .back-link:hover {
+            background-color: #0056b3;
+        }
+
+        .status-option {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Dodaj swoje wolne godziny</h1>
+    <div class="form-container">
+        <form id="time-form">
+            <label for="name">Imię:</label>
+            <input type="text" id="name" name="name" required>
+
+            <div class="status-option">
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="available">Dostępny</option>
+                    <option value="unavailable">Niedostępny</option>
+                </select>
+            </div>
+
+            <label for="day">Dzień tygodnia:</label>
+            <select id="day" name="day">
+                <option value="1">Poniedziałek</option>
+                <option value="2">Wtorek</option>
+                <option value="3">Środa</option>
+                <option value="4">Czwartek</option>
+                <option value="5">Piątek</option>
+                <option value="6">Sobota</option>
+                <option value="0">Niedziela</option>
+            </select>
+
+            <label for="start">Godzina rozpoczęcia (HH:MM):</label>
+            <input type="time" id="start" name="start" required>
+
+            <label for="end">Godzina zakończenia (HH:MM):</label>
+            <input type="time" id="end" name="end" required>
+
+            <button type="submit" id="submit-schedule">Dodaj wolne godziny</button>
+            <button type="button" id="submit-status">Zmień status</button>
+        </form>
+    </div>
+
+    <a href="index.html" class="back-link">Powrót do strony głównej</a>
+
+    <script>
+        // Funkcja do dodawania wolnych godzin
+        async function addFreeTime(name, day, start, end) {
+            const newScheduleEntry = { name, day, start, end };
+            try {
+                const response = await fetch('http://localhost:3000/add-schedule', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newScheduleEntry)
+                });
+
+                if (response.ok) {
+                    alert('Wolny czas został dodany!');
+                    window.location.href = 'index.html';  // Powrót do strony głównej po dodaniu
+                } else {
+                    alert('Wystąpił problem z dodaniem danych.');
+                }
+            } catch (error) {
+                console.error('Błąd podczas wysyłania danych:', error);
+            }
+        }
+
+        // Funkcja do zmiany statusu
+        async function changeStatus(name, status) {
+            const statusEntry = { name, status };
+            try {
+                const response = await fetch('http://localhost:3000/change-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(statusEntry)
+                });
+
+                if (response.ok) {
+                    alert('Status został zmieniony!');
+                    window.location.href = 'index.html';  // Powrót do strony głównej po zmianie statusu
+                } else {
+                    alert('Wystąpił problem ze zmianą statusu.');
+                }
+            } catch (error) {
+                console.error('Błąd podczas zmiany statusu:', error);
+            }
+        }
+
+        document.getElementById('time-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const day = parseInt(document.getElementById('day').value);
+            const start = document.getElementById('start').value;
+            const end = document.getElementById('end').value;
+
+            // Dodawanie wolnych godzin
+            if (start && end) {
+                await addFreeTime(name, day, start, end);
+            }
+        });
+
+        // Zmiana statusu
+        document.getElementById('submit-status').addEventListener('click', function () {
+            const name = document.getElementById('name').value;
+            const status = document.getElementById('status').value;
+            changeStatus(name, status);
+        });
+    </script>
+</body>
+
+</html>
