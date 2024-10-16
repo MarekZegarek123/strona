@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osoby z wolnym czasem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .person {
+            background-color: #f0f8ff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .no-one {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Skibidi sigma</h1>
+    <div id="free-people"></div>
+
+    <script>
+        // Przykładowa tabela danych (w formacie: dzień, start, koniec, imię)
+        const schedule = [
+            { day: 1, start: "10:00", end: "12:00", name: "Anna" }, // poniedziałek
+            { day: 1, start: "14:00", end: "16:00", name: "Krzysztof" },
+            { day: 2, start: "09:00", end: "11:00", name: "Piotr" }, // wtorek
+            { day: 3, start: "13:00", end: "15:00", name: "Maria" }, // środa
+            { day: 4, start: "08:00", end: "10:00", name: "Ewa" },  // czwartek
+            { day: 5, start: "11:00", end: "13:00", name: "Tomasz" }, // piątek
+            { day: 6, start: "17:00", end: "19:00", name: "Adam" },  // sobota
+            { day: 6, start: "00:00", end: "01:00", name: "Adam" },  // sobota
+            { day: 6, start: "00:00", end: "02:00", name: "Piotr" },  // sobota
+            { day: 6, start: "00:10", end: "03:00", name: "Krzysiek kurwiarz" },  // sobota
+            { day: 0, start: "12:00", end: "14:00", name: "Ola" },    // niedziela
+            
+             //Adrian
+             { day: 1, start: "13:00", end: "14:00", name: "Adrian" }, 
+             { day: 2, start: "09:30", end: "11:30", name: "Adrian" }, 
+             { day: 2, start: "13:00", end: "16:00", name: "Adrian" },
+             { day: 3, start: "13:00", end: "13:15", name: "Adrian" }, 
+             { day: 3, start: "13:00", end: "14:00", name: "Adrian" }, 
+             { day: 3, start: "14:45", end: "15:00", name: "Adrian" }, 
+             { day: 3, start: "16:00", end: "18:30", name: "Adrian" }, 
+             { day: 4, start: "10:15", end: "13:15", name: "Adrian" }, 
+             { day: 4, start: "14:45", end: "17:30", name: "Adrian" }, 
+             { day: 5, start: "10:30", end: "13:15", name: "Adrian" },
+             
+             //Sadziu
+             { day: 1, start: "11:15", end: "11:30", name: "Szymon" }, 
+             { day: 1, start: "13:00", end: "13:15", name: "Szymon" }, 
+             { day: 2, start: "11:00", end: "13:15", name: "Szymon" },  
+             { day: 4, start: "09:30", end: "11:30", name: "Szymon" }, 
+             { day: 4, start: "13:00", end: "13:15", name: "Szymon" }, 
+             { day: 4, start: "14:45", end: "15:00", name: "Szymon" }, 
+             { day: 4, start: "16:30", end: "16:45", name: "Szymon" }, 
+             { day: 5, start: "11:00", end: "11:30", name: "Szymon" },
+             { day: 5, start: "13:00", end: "13:15", name: "Szymon" },
+        ];
+
+        // Funkcja sprawdzająca, kto ma teraz wolny czas
+        function checkFreePeople() {
+            const now = new Date();
+            const currentDay = now.getDay(); // Zwraca dzień tygodnia (0 = niedziela, 1 = poniedziałek, itd.)
+            console.log(now.toTimeString().slice(0, 5));
+            const currentTime = now.toTimeString().slice(0, 5); // Wyciąga aktualną godzinę w formacie HH:MM
+            
+
+            // Filtrujemy osoby, które mają teraz wolny czas
+            const freePeople = schedule.filter(person => {
+                return person.day === currentDay && currentTime >= person.start && currentTime <= person.end;
+            });
+            console.log(freePeople);
+
+            // Wyświetlamy osoby na stronie
+            const freePeopleDiv = document.getElementById('free-people');
+            freePeopleDiv.innerHTML = '';
+
+            if (freePeople.length > 0) {
+                freePeople.forEach(person => {
+                    const personDiv = document.createElement('div');
+                    personDiv.classList.add('person');
+                    personDiv.innerHTML = `${person.name} ma teraz wolny czas do ${person.end}.`;
+                    freePeopleDiv.appendChild(personDiv);
+                });
+            } else {
+                const noOneDiv = document.createElement('div');
+                noOneDiv.classList.add('no-one');
+                noOneDiv.textContent = "Nikt nie ma czasu.";
+                freePeopleDiv.appendChild(noOneDiv);
+            }
+        }
+
+        // Odświeżamy listę osób z wolnym czasem przy każdym odświeżeniu strony
+        window.onload = checkFreePeople;
+    </script>
+</body>
+
+</html>
